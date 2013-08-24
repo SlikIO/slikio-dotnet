@@ -2,7 +2,7 @@ This is a .NET library for Slik.IO - Charts as a service.
 
 #Installation
 ###Nuget 
-`Install-Package SlikIO
+`Install-Package SlikIO`
 
 #Usage
 First, sign up to Slik.IO if you havent done so already and get the PRIVATE API KEY.

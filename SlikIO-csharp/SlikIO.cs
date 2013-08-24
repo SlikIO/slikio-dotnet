@@ -19,7 +19,7 @@ namespace SlikIO
             if (string.IsNullOrWhiteSpace(privateKey)) throw new Exception("You must specify a valid API key");
 
             PrivateAPIKey = privateKey;
-            BaseUrl = "http://app.slik.io:3001/api/v1/";
+            BaseUrl = "http://app.slik.io/api/v1/";
         }
 
         public WebResponse sendData(string collectionID, Dictionary<string, object> data)
