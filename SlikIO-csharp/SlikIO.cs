@@ -12,17 +12,13 @@ namespace SlikIO
     {
         public string PrivateAPIKey { get; private set; }
 
-        public string BaseUrl { get; set; }
-
-        private WebClient client;
+        public string BaseUrl { get; private set; }
 
         public SlikIO(string privateKey)
         {
             if (string.IsNullOrWhiteSpace(privateKey)) throw new Exception("You must specify a valid API key");
 
             PrivateAPIKey = privateKey;
-            client = new WebClient();
-            client.Credentials = new NetworkCredential(PrivateAPIKey, "");
             BaseUrl = "http://app.slik.io:3001/api/v1/";
         }
 
