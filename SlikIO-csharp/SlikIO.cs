@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.Specialized;
 using System.Net;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace SlikIO
 {
@@ -22,7 +23,12 @@ namespace SlikIO
             BaseUrl = "https://app.slik.io/api/v1/";
         }
 
-        public WebResponse sendData(string collectionID, Dictionary<string, object> data)
+        /// <summary>
+        /// Sends data(dictionary) to a specified collection.
+        /// </summary>
+        /// <param name="collectionID">The collection ID you want to send the data to.</param>
+        /// <param name="data">The data you want to send</param>
+        public WebResponse SendData(string collectionID, Dictionary<string, object> data)
         {
             if (string.IsNullOrWhiteSpace(collectionID)) throw new Exception("You must specify a collection ID");
 
@@ -32,14 +38,15 @@ namespace SlikIO
 
         private WebResponse makePOSTRequest(string url, Dictionary<string, object> data)
         {
-            string postData = createPostData(data);
+            string postData = JsonConvert.SerializeObject(new Dictionary<string, object>() { { "data", data } });
             byte[] buffer = Encoding.ASCII.GetBytes(postData);
 
             WebRequest request = WebRequest.Create(BaseUrl + url);
             request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
+            request.ContentType = "application/json";
             request.ContentLength = buffer.Length;
-            request.Credentials = new NetworkCredential(PrivateAPIKey, "");
+            string auth = Convert.ToBase64String(Encoding.Default.GetBytes(PrivateAPIKey));
+            request.Headers["Authorization"] = "Basic " + auth;
             using (Stream requestStream = request.GetRequestStream())
             {
                 requestStream.Write(buffer, 0, buffer.Length);
@@ -48,17 +55,6 @@ namespace SlikIO
             // Get the response.
             WebResponse response = request.GetResponse();
             return response;
-        }
-
-
-        private string createPostData(Dictionary<string, object> data)
-        {
-            string res = "";
-
-            foreach (var item in data)
-                res += "data[" + item.Key + "]=" + item.Value.ToString() + "&";
-
-            return res.Remove(res.Length - 1, 1);
         }
 
     }
